@@ -19,7 +19,7 @@ pipeline {
         }
         stage("Build") {
             steps {
-                sh 'gradle clean build'
+                sh 'cd gateway; gradle clean build'
                 junit "**/build/test-results/test/*.xml"
                 jacoco(
                     execPattern: 'build/jacoco/jacoco.exec'
@@ -28,7 +28,7 @@ pipeline {
         }
         stage('Publish') {
             steps {
-                sh "gradle jib"
+                sh "cd gateway; gradle jib"
             }
         }
     }
