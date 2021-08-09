@@ -22,3 +22,8 @@ If random secrets are used, then you will have to connect a terminal to the `key
 /run/secrets/keycloak_user
 /run/secrets/keycloak_password
 ```
+To start the Docker services, run the following:
+```bash
+docker stack deploy --compose-file=docker-compose.yml keycloak_test
+```
+Note that neither the `gateway` nor the `ping` service will come up until the appropriate clients are created within `keycloak`.
