@@ -26,4 +26,4 @@ To start the Docker services, run the following:
 ```bash
 docker stack deploy --compose-file=docker-compose.yml keycloak_test
 ```
-Note that neither the `gateway` nor the `ping` service will come up until the appropriate clients are created within `keycloak`.
+> Note that neither the `gateway` nor the `ping` service will come up until the appropriate clients are created within `keycloak`.
