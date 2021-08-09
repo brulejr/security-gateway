@@ -1,11 +1,11 @@
-package io.jrb.labs.gateway;
+package io.jrb.labs.ping;
 
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-class GatewayApplicationTests {
+class PingApplicationTests {
 
 	@Test
 	void contextLoads() {
