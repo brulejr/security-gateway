@@ -1,3 +1,3 @@
-hosts:
-  keycloak: keycloak
-  ping: ping
+baseurl:
+  keycloak: http://keycloak:8888
+  ping: http://ping:8040

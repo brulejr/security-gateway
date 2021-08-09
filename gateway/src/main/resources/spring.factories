@@ -1,0 +1,1 @@
+org.springframework.boot.env.EnvironmentPostProcessor=io.jrb.labs.gateway.config.DockerSecretsProcessor

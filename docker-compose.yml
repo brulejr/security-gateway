@@ -2,8 +2,21 @@ version: '3.9'
 
 services:
 
+  gateway:
+    image: brulejr/gateway
+    networks:
+      - backend
+    ports:
+      - "8060:8060"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      KEYCLOAK_CLIENT_ID_FILE: /run/secrets/keycloak_client_id
+      KEYCLOAK_CLIENT_SECRET_FILE: /run/secrets/keycloak_client_secret
+    secrets:
+      - keycloak_client_id
+      - keycloak_client_secret
+
   keycloak-db:
-    container_name: keycloak-db
     image: postgres:13-alpine
     networks:
       - backend
@@ -19,7 +32,6 @@ services:
       - db_password
 
   keycloak:
-    container_name: keycloak
     image: jboss/keycloak
     networks:
       - backend
@@ -44,10 +56,15 @@ services:
 secrets:
   db_password:
     external: yes
-  keycloak_user:
+  keycloak_client_id:
+    external: yes
+  keycloak_client_secret:
     external: yes
   keycloak_password:
     external: yes
+  keycloak_user:
+    external: yes
+    
 
 volumes:
   keycloak-datastore:

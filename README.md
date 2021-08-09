@@ -1,5 +1,6 @@
 # Overview
-This 
+TBD
+
 # Deployment Instructions
 Ensure that Docker is in Swarm mode. If not, run the following command to setup the mode:
 ```bash
@@ -27,3 +28,7 @@ To start the Docker services, run the following:
 docker stack deploy --compose-file=docker-compose.yml keycloak_test
 ```
 > Note that neither the `gateway` nor the `ping` service will come up until the appropriate clients are created within `keycloak`.
+
+# Resources
+* [Injecting credentials into a Docker container running a Spring Boot application](https://bmuschko.com/blog/docker-secret-spring-boot/)
+* [Using Docker Secrets With Docker Compose](https://www.rockyourcode.com/using-docker-secrets-with-docker-compose/)
