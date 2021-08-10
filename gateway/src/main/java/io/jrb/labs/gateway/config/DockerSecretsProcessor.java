@@ -45,8 +45,10 @@ public class DockerSecretsProcessor implements EnvironmentPostProcessor {
 
     @Override
     public void postProcessEnvironment(final ConfigurableEnvironment environment, final SpringApplication application) {
+        log.info("BEGIN: Loading docker secrets...");
         transferSecret("KEYCLOAK_CLIENT_ID_FILE", "KEYCLOAK_CLIENT_ID", environment);
         transferSecret("KEYCLOAK_CLIENT_SECRET_FILE", "KEYCLOAK_CLIENT_SECRET", environment);
+        log.info("END: Loading docker secrets...");
     }
 
     private void transferSecret(final String secretName, final String propertyName, final ConfigurableEnvironment environment) {
