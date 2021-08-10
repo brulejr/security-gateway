@@ -11,7 +11,7 @@ Create the necessary secrets. This can be done explicitly using the following fo
 echo "spring" | docker secret create keycloak_user -
 echo "spring123" | docker secret create keycloak_password -
 echo "password" | docker secret create db_password -
-echo "TBD" | docker secret create keycloak_client_id -
+echo "spring-with-test-scope" | docker secret create keycloak_client_id -
 echo "TBD" | docker secret create keycloak_client_secret -
 ```
 Or, random secrets may be used.

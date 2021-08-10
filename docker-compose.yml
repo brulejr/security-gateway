@@ -2,6 +2,11 @@ version: '3.9'
 
 services:
 
+  ping:
+    image: brulejr/ping
+    networks:
+      - backend
+
   gateway:
     image: brulejr/gateway
     networks:

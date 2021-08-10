@@ -9,7 +9,7 @@ spring:
         - TokenRelay
       routes:
         - id: ping-service
-          uri: http://${hosts.ping}:8040
+          uri: ${baseurl.ping}
           predicates:
             - Path=/ping/**
           filters:
