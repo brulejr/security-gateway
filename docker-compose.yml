@@ -8,7 +8,7 @@ services:
       - backend
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      KEYCLOAK_BASEURL: http://localhost:8888
+      KEYCLOAK_BASEURL: http://keycloak:8080
   
   gateway:
     image: brulejr/gateway
