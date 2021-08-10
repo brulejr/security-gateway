@@ -8,6 +8,7 @@ services:
       - backend
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      KEYCLOAK_BASEURL: http://localhost:8888
   
   gateway:
     image: brulejr/gateway
@@ -17,8 +18,10 @@ services:
       - "8060:8060"
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      KEYCLOAK_BASEURL: http://localhost:8888
       KEYCLOAK_CLIENT_ID_FILE: /run/secrets/keycloak_client_id
       KEYCLOAK_CLIENT_SECRET_FILE: /run/secrets/keycloak_client_secret
+      PING_BASEURL: http://ping:8040
     secrets:
       - keycloak_client_id
       - keycloak_client_secret

@@ -1,3 +1,2 @@
-baseurl:
-  keycloak: http://localhost:8888
-  ping: http://localhost:8040
+KEYCLOAK_BASEURL: http://localhost:8888
+PING_BASEURL: http://localhost:8040

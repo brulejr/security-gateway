@@ -1,2 +1,1 @@
-baseurl:
-  keycloak: http://localhost:8888
+KEYCLOAK_BASEURL: http://localhost:8888
