@@ -66,7 +66,8 @@ public class DockerSecretsProcessor implements EnvironmentPostProcessor {
         if (resource.exists()) {
             try {
                 System.out.println("Loading secret from '" + secretPath + "'...");
-                return Optional.of(StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset()));
+                return Optional.of(StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset()))
+                        .map(String::trim);
             } catch(final IOException e) {
                 final String error = format("Unable to read secret '%s' from disk", secretName);
                 System.err.println(error);
