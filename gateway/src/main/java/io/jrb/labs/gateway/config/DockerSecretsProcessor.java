@@ -23,9 +23,11 @@
  */
 package io.jrb.labs.gateway.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
+import org.springframework.boot.logging.DeferredLog;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.io.FileSystemResource;
@@ -38,10 +40,10 @@ import java.util.Properties;
 
 import static java.lang.String.format;
 
-@Slf4j
-public class DockerSecretsProcessor implements EnvironmentPostProcessor {
+public class DockerSecretsProcessor implements EnvironmentPostProcessor, ApplicationListener<ApplicationEvent> {
 
     private static final String SECRET_PATH = "/run/secrets/%s";
+    private static final DeferredLog log = new DeferredLog();
 
     @Override
     public void postProcessEnvironment(final ConfigurableEnvironment environment, final SpringApplication application) {
@@ -56,7 +58,7 @@ public class DockerSecretsProcessor implements EnvironmentPostProcessor {
         final Resource resource = new FileSystemResource(secretPath);
         if (resource.exists()) {
             try {
-                log.info("Injecting secret '{}' into property '{}'...", secretName, propertyName);
+                log.info(format("Injecting secret '%s' into property '%s'...", secretName, propertyName));
                 final String secretValue = StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset());
 
                 final Properties props = new Properties();
@@ -64,10 +66,15 @@ public class DockerSecretsProcessor implements EnvironmentPostProcessor {
                 environment.getPropertySources().addLast(new PropertiesPropertySource("dockerSecrets", props));
 
             } catch(final IOException e) {
-                log.error("Unable to read secret '{}' from disk", secretName, e);
+                log.error(format("Unable to read secret '%s' from disk", secretName), e);
                 throw new IllegalStateException(e);
             }
         }
     }
 
+    @Override
+    public void onApplicationEvent(final ApplicationEvent event) {
+        log.replayTo(DockerSecretsProcessor.class);
+    }
+    
 }
