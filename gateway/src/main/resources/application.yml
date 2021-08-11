@@ -21,7 +21,7 @@ spring:
           keycloak:
             token-uri: ${KEYCLOAK_BASEURL_INTERNAL}/auth/realms/master/protocol/openid-connect/token
             authorization-uri: ${KEYCLOAK_BASEURL}/auth/realms/master/protocol/openid-connect/auth
-            userinfo-uri: ${KEYCLOAK_BASEURL}/auth/realms/master/protocol/openid-connect/userinfo
+            userinfo-uri: ${KEYCLOAK_BASEURL_INTERNAL}/auth/realms/master/protocol/openid-connect/userinfo
             user-name-attribute: preferred_username
         registration:
           keycloak-with-test-scope:
