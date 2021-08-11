@@ -19,7 +19,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       KEYCLOAK_BASEURL: http://localhost:8888
-      KEYCLOAK_BASEURL_INTERNAL: http://localhost:8080
+      KEYCLOAK_BASEURL_INTERNAL: http://keycloak:8080
       KEYCLOAK_CLIENT_ID_FILE: /run/secrets/keycloak_client_id
       KEYCLOAK_CLIENT_SECRET_FILE: /run/secrets/keycloak_client_secret
       PING_BASEURL: http://ping:8040
