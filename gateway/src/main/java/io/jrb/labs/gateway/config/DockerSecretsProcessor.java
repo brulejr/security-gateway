@@ -25,9 +25,6 @@ package io.jrb.labs.gateway.config;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.boot.logging.DeferredLog;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.io.FileSystemResource;
@@ -40,25 +37,25 @@ import java.util.Properties;
 
 import static java.lang.String.format;
 
-public class DockerSecretsProcessor implements EnvironmentPostProcessor, ApplicationListener<ApplicationEvent> {
+public class DockerSecretsProcessor implements EnvironmentPostProcessor {
 
     private static final String SECRET_PATH = "/run/secrets/%s";
-    private static final DeferredLog log = new DeferredLog();
 
     @Override
     public void postProcessEnvironment(final ConfigurableEnvironment environment, final SpringApplication application) {
-        log.info("BEGIN: Loading docker secrets...");
+        System.out.println("BEGIN: Loading docker secrets...");
         transferSecret("KEYCLOAK_CLIENT_ID_FILE", "KEYCLOAK_CLIENT_ID", environment);
         transferSecret("KEYCLOAK_CLIENT_SECRET_FILE", "KEYCLOAK_CLIENT_SECRET", environment);
-        log.info("END: Loading docker secrets...");
+        System.out.println("END: Loading docker secrets...");
     }
 
     private void transferSecret(final String secretName, final String propertyName, final ConfigurableEnvironment environment) {
         final String secretPath = environment.getProperty(secretName, format(SECRET_PATH, secretName));
         final Resource resource = new FileSystemResource(secretPath);
+        System.out.println("resource<" + secretName + "> = [" + resource + "]");
         if (resource.exists()) {
             try {
-                log.info(format("Injecting secret '%s' into property '%s'...", secretName, propertyName));
+                System.out.println(format("Injecting secret '%s' into property '%s'...", secretName, propertyName));
                 final String secretValue = StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset());
 
                 final Properties props = new Properties();
@@ -66,15 +63,11 @@ public class DockerSecretsProcessor implements EnvironmentPostProcessor, Applica
                 environment.getPropertySources().addLast(new PropertiesPropertySource("dockerSecrets", props));
 
             } catch(final IOException e) {
-                log.error(format("Unable to read secret '%s' from disk", secretName), e);
+                System.err.println(format("Unable to read secret '%s' from disk", secretName));
+                e.printStackTrace();
                 throw new IllegalStateException(e);
             }
         }
     }
 
-    @Override
-    public void onApplicationEvent(final ApplicationEvent event) {
-        log.replayTo(DockerSecretsProcessor.class);
-    }
-    
 }
