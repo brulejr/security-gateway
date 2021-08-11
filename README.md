@@ -49,9 +49,10 @@ Open a browser to http://localhost:888, navigate to the **Administraton Console*
 By default, the **Master** realm will be displayed. Navigate to the **Client** option in the left panel and click the **Create** button to add a new client with the following settings:
 
 |Parameter|Value|
-|Client ID|spring-with-test-scope|
-|Access Type|confidential|
-|Valid Redirect URIs|*|
+|---------|-----|
+|Client ID|`spring-with-test-scope`|
+|Access Type|`confidential`|
+|Valid Redirect URIs|`*`|
 
 # Resources
 * [Spring Cloud Gateway OAuth2 with Keycloak](https://piotrminkowski.com/2020/10/09/spring-cloud-gateway-oauth2-with-keycloak/)
