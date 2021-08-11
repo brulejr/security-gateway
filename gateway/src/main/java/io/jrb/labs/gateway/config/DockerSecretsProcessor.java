@@ -26,14 +26,17 @@ package io.jrb.labs.gateway.config;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.PropertiesPropertySource;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -44,30 +47,34 @@ public class DockerSecretsProcessor implements EnvironmentPostProcessor {
     @Override
     public void postProcessEnvironment(final ConfigurableEnvironment environment, final SpringApplication application) {
         System.out.println("BEGIN: Loading docker secrets...");
-        transferSecret("KEYCLOAK_CLIENT_ID_FILE", "KEYCLOAK_CLIENT_ID", environment);
-        transferSecret("KEYCLOAK_CLIENT_SECRET_FILE", "KEYCLOAK_CLIENT_SECRET", environment);
+
+        final Map<String, Object> secrets = new HashMap<>();
+        retrieveSecret("KEYCLOAK_CLIENT_ID_FILE", environment)
+                .ifPresent(s -> secrets.put("KEYCLOAK_CLIENT_ID", s));
+        retrieveSecret("KEYCLOAK_CLIENT_SECRET_FILE", environment)
+                .ifPresent(s -> secrets.put("KEYCLOAK_CLIENT_SECRET", s));
+
+        final MutablePropertySources propertySources = environment.getPropertySources();
+        propertySources.addFirst(new MapPropertySource("dockerSecrets", secrets));
+
         System.out.println("END: Loading docker secrets...");
     }
 
-    private void transferSecret(final String secretName, final String propertyName, final ConfigurableEnvironment environment) {
+    private Optional<String> retrieveSecret(final String secretName, final ConfigurableEnvironment environment) {
         final String secretPath = environment.getProperty(secretName, format(SECRET_PATH, secretName));
         final Resource resource = new FileSystemResource(secretPath);
-        System.out.println("resource<" + secretName + "> = [" + resource + "]");
         if (resource.exists()) {
             try {
-                System.out.println(format("Injecting secret '%s' into property '%s'...", secretName, propertyName));
-                final String secretValue = StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset());
-
-                final Properties props = new Properties();
-                props.put(propertyName, secretValue);
-                environment.getPropertySources().addLast(new PropertiesPropertySource("dockerSecrets", props));
-
+                System.out.println("Loading secret from '" + secretPath + "'...");
+                return Optional.of(StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset()));
             } catch(final IOException e) {
-                System.err.println(format("Unable to read secret '%s' from disk", secretName));
+                final String error = format("Unable to read secret '%s' from disk", secretName);
+                System.err.println(error);
                 e.printStackTrace();
-                throw new IllegalStateException(e);
+                throw new IllegalStateException(error, e);
             }
         }
+        return Optional.empty();
     }
 
 }
