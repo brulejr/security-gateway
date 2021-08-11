@@ -1,2 +1,3 @@
 KEYCLOAK_BASEURL: http://localhost:8888
+KEYCLOAK_BASEURL_INTERNAL: http://localhost:8888
 PING_BASEURL: http://localhost:8040
